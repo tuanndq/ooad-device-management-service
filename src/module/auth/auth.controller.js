@@ -2,13 +2,15 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("../../database");
 
-const SECRET_STRING = process.env.SECRET_STRING;
-const GEN_SAIL = process.env.GEN_SAIL;
+const SECRET_STRING = process.env.SECRET_STRING || "asfdasfd";
+const GEN_SAIL = process.env.GEN_SAIL || 10;
 
 const AuthController = {
   login: async (req, res) => {
     const { username, password } = req.body;
     try {
+      console.log(req.body);
+
       const user = await User.findOne({
         where: {
           username,
@@ -24,7 +26,7 @@ const AuthController = {
         throw new Error("Password incorrect.");
       }
 
-      const accessToken = this.genarateToken(user.id);
+      const accessToken = genarateToken(user.id);
 
       return res.status(200).json({
         ...user,
@@ -56,16 +58,23 @@ const AuthController = {
 
       await user.save();
 
-      return res.status(200).json(user);
+      const accessToken = genarateToken(user.id);
+
+      console.log(accessToken);
+
+      return res.status(200).json({
+        ...user,
+        token: accessToken,
+      });
     } catch (err) {
       console.log(err);
       return res.status(401).json({ message: `Register error.` });
     }
   },
+};
 
-  genarateToken: (userId) => {
-    return jwt.sign(userId, SECRET_STRING);
-  },
+const genarateToken = (userId) => {
+  return jwt.sign(userId, SECRET_STRING);
 };
 
 module.exports = AuthController;
