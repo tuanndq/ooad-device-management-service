@@ -1,9 +1,14 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize("device_management", `root`, `tuanndq`, {
+const DB_NAME = process.env.DB_NAME;
+const DB_USERNAME = process.env.DB_USERNAME;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_PORT = process.env.DB_PORT;
+
+const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
   host: "localhost",
-  port: process.env.DB_PORT,
+  port: DB_PORT,
   dialect: "mysql",
 });
 

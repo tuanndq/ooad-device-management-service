@@ -7,6 +7,7 @@ const DeviceController = {
       const devices = await Device.findAll({
         attributes: [
           "id",
+          "name",
           "type",
           "status",
           "maximumGuess",
@@ -27,6 +28,8 @@ const DeviceController = {
       const device = await Device.findOne({
         where: { id },
         attributes: [
+          "id",
+          "name",
           "type",
           "status",
           "maximumGuess",
@@ -44,11 +47,24 @@ const DeviceController = {
   },
 
   createDevice: async (req, res) => {
-    const body = req.body;
+    const { name, type, status, maximumGuess, subcribeTime, expTime } =
+      req.body;
     try {
-      console.log(body);
-      const newDevice = new Device(body);
+      const checkDevice = await Device.findOne({ where: { name } });
+      if (checkDevice) {
+        return res.status(400).json({ message: "Device name exists." });
+      }
+
+      const newDevice = new Device({
+        name,
+        type,
+        status,
+        maximumGuess,
+        subcribeTime,
+        expTime,
+      });
       await newDevice.save();
+
       return res.status(200).json({ newDevice });
     } catch (err) {
       console.log(err);
