@@ -5,7 +5,14 @@ const DeviceController = {
   getAllDevice: async (req, res) => {
     try {
       const devices = await Device.findAll({
-        attributes: ["type", "status"],
+        attributes: [
+          "id",
+          "type",
+          "status",
+          "maximumGuess",
+          "subcribeTime",
+          "expTime",
+        ],
       });
       return res.status(200).json(devices);
     } catch (err) {
@@ -39,6 +46,7 @@ const DeviceController = {
   createDevice: async (req, res) => {
     const body = req.body;
     try {
+      console.log(body);
       const newDevice = new Device(body);
       await newDevice.save();
       return res.status(200).json({ newDevice });

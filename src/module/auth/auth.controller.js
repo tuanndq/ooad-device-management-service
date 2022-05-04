@@ -74,7 +74,7 @@ const AuthController = {
 };
 
 const genarateToken = (userId) => {
-  return jwt.sign(userId, SECRET_STRING);
+  return jwt.sign({ id: userId }, SECRET_STRING);
 };
 
 module.exports = AuthController;
